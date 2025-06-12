@@ -11,18 +11,16 @@ interface Product {
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false); // 🆕
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Wczytanie produktów z localStorage
   useEffect(() => {
     const saved = localStorage.getItem("products");
     if (saved) {
       setProducts(JSON.parse(saved));
     }
-    setIsInitialized(true); // ✅ Oznacz jako wczytane
+    setIsInitialized(true);
   }, []);
 
-  // Zapis do localStorage po inicjalizacji
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem("products", JSON.stringify(products));
@@ -37,11 +35,23 @@ const App: React.FC = () => {
     setProducts((prev) => prev.filter((_, i) => i !== index));
   };
 
+ const handleEditCategoryName = (oldName: string, newName: string) => {
+  setProducts((prev) =>
+    prev.map((p) =>
+      p.category === oldName ? { ...p, category: newName } : p
+    )
+  );
+};
+
   return (
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-2xl font-bold text-center mb-4">Monitor Daty Ważności</h1>
       <ProductForm onAdd={handleAdd} />
-      <ProductList products={products} onDelete={handleDelete} />
+      <ProductList
+        products={products}
+        onDelete={handleDelete}
+        onEditCategoryName={handleEditCategoryName}
+      />
     </div>
   );
 };
