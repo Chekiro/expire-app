@@ -5,7 +5,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
   plugins: [
     react(),
     tailwindcss(),
@@ -25,9 +24,6 @@ export default defineConfig({
       "purpose": "any"
     },] 
       },
-      devOptions: {
-        enabled: true
-      }
     })
   ]
 })
