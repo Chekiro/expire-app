@@ -22,12 +22,24 @@ const ProductList: React.FC<Props> = ({ products, onDelete }) => {
   }, {});
 
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [productToDelete, setProductToDelete] = useState<{ index: number; product: Product } | null>(null);
 
   const toggleCategory = (category: string) => {
     setExpanded((prev) => ({
       ...prev,
       [category]: !prev[category]
     }));
+  };
+
+  const confirmDelete = () => {
+    if (productToDelete) {
+      onDelete(productToDelete.index);
+      setProductToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setProductToDelete(null);
   };
 
   return (
@@ -60,7 +72,7 @@ const ProductList: React.FC<Props> = ({ products, onDelete }) => {
                     </div>
                     <button
                       className="text-red-500 font-bold"
-                      onClick={() => onDelete(index)}
+                      onClick={() => setProductToDelete({ index, product })}
                     >
                       ✕
                     </button>
@@ -71,6 +83,30 @@ const ProductList: React.FC<Props> = ({ products, onDelete }) => {
           )}
         </div>
       ))}
+      {productToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded p-6 max-w-sm w-full shadow-lg">
+            <h2 className="text-lg font-bold mb-4">Usuń przedmiot?</h2>
+            <p className="mb-4">
+              Czy na pewno chcesz usunąć <strong>{productToDelete.product.name}</strong>?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+              >
+                Anuluj
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+              >
+                Usuń
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
